@@ -38,7 +38,6 @@ uint8_t findSht3xAddress() {
     return 0x44;
 }
 
-
 bool sensorInitSht3x() {
     uint16_t statusRegister = 0u;
 
@@ -89,7 +88,15 @@ bool sensorReadSht3x() {
 }
 
 void scheduleReadSht3x() {
-    sensorReadSht3x();
+    if (millis() - sht3x_lastMeasurementTime < SHT3X_READ_INTERVAL) {
+        return;
+    }
+    sht3x_lastMeasurementTime = millis();    
+    for (uint8_t i=0; i < SHT3X_READ_RETRY; i++) {
+        if (sensorReadSht3x()) {
+            break;
+        }
+    }
 }
 
 float medianTemperatureSht3x() {
