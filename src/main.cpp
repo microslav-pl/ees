@@ -5,6 +5,7 @@
 #include <median.h>
 #include <sensor_sht3x.h>
 #include <sensor_sen5x.h>
+#include <sensor_bmp3xx.h>
 #include <serialLog.h>
 
 #include <config.h>
@@ -18,7 +19,7 @@ void display_motd() {
     Serial.println("=======================================");
 }
 
-void conenct_to_ethernet() {
+void connect_to_ethernet() {
     if (!eth.begin()) {
         serialLog(ERROR, "No wired Ethernet hardware detected.\n");
         while (1) {
@@ -64,10 +65,11 @@ void setup() {
     Wire.begin();
 
     display_motd();
-    conenct_to_ethernet();
+    connect_to_ethernet();
 
     if (!sensorInitSht3x()) setupFailed = true;
     if (!sensorInitSen5x()) setupFailed = true;
+    if (!sensorInitBmp3xx()) setupFailed = true;
 
     if (setupFailed) {
       serialLog(ERROR, "Setup failed! Reboot in 10 seconds: ");
@@ -82,9 +84,11 @@ void setup() {
 void loop() {
     scheduleReadSht3x();
     scheduleReadSen5x();
+    scheduleReadBmp3xx();
 
     serialLog(INFO, "Median T: %6.2f, RH: %6.2f\n", medianTemperatureSht3x(), medianRelHumiditySht3x());
-    serialLog(INFO, "Median PM1: %5.1f, PM2.5: %5.1f, PM4; %5.1f, PM10: %5.1f\n", medianPM1Sen5x(), medianPM2_5Sen5x(), medianPM4Sen5x(), medianPM10Sen5x());
+    serialLog(INFO, "Median T: %6.2f, P:  %6.2f\n", medianTemperatureBmp3xx(), medianPressureBmp3xx());
+    //serialLog(INFO, "Median PM1: %5.1f, PM2.5: %5.1f, PM4; %5.1f, PM10: %5.1f\n", medianPM1Sen5x(), medianPM2_5Sen5x(), medianPM4Sen5x(), medianPM10Sen5x());
     delay(2000);
 }
 

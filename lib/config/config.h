@@ -10,6 +10,7 @@
 
 // Bosch Sensortec BMP388 I²C Address: 0x76 or 0x77
 #define I2C_ADD_BMP388          0x77
+
 // Sensirion SEN5x I²C Address: 0x69
 #define I2C_ADD_SEN5x           0x69
 
@@ -17,9 +18,9 @@
 #define SHT3X_MEDIAN_ARRAY      7
 #define SHT3X_READ_RETRY        3
 
-#define BMP388_READ_INTERVAL    1000
-#define BMP388_MEDIAN_ARRAY     7
-#define BMP388_READ_RETRY        3
+#define BMP3XX_READ_INTERVAL    1000
+#define BMP3XX_MEDIAN_ARRAY     7
+#define BMP3XX_READ_RETRY       3
 
 #define SEN5X_READ_INTERVAL     1000
 #define SEN5X_MEDIAN_ARRAY      7
