@@ -20,6 +20,9 @@ Simple environment sensor connected via Ethernet (preferable using PoE)
 - Framework: Arduino
 - [Raspberry Pi Pico Arduino core](https://github.com/earlephilhower/arduino-pico)
 - Libraries:
-  - [sensirion/Sensirion Core](https://github.com/Sensirion/arduino-core)
-  - [sensirion/Sensirion I2C SHT3x](https://github.com/Sensirion/arduino-i2c-sht3x)
-  - [sensirion/Sensirion I2C SEN5X](https://github.com/Sensirion/arduino-i2c-sen5x)
+  - [Sensirion Core](https://github.com/Sensirion/arduino-core)
+  - [Sensirion I2C SHT3x](https://github.com/Sensirion/arduino-i2c-sht3x)
+  - [Sensirion I2C SEN5X](https://github.com/Sensirion/arduino-i2c-sen5x)
+  - [Adafruit BusIO](https://github.com/adafruit/Adafruit_BusIO)
+  - [Adafruit Unified Sensor](https://github.com/adafruit/Adafruit_Sensor)
+  - [Adafruit BMP3XX Library](https://github.com/adafruit/Adafruit_BMP3XX)
