@@ -12,13 +12,6 @@
 
 Wiznet55rp20lwIP eth(20);
 
-void display_motd() {
-    Serial.println("");
-    Serial.println("=======================================");
-    Serial.println("      Ethernet Environment Sensor      ");
-    Serial.println("=======================================");
-}
-
 void connect_to_ethernet() {
     if (!eth.begin()) {
         serialLog(ERROR, "No wired Ethernet hardware detected.\n");
@@ -35,24 +28,9 @@ void connect_to_ethernet() {
 
     serialLog(INFO, "Ethernet connected\n");
     serialLog(INFO, "IP address: %s\n", eth.localIP().toString().c_str());
-}
 
-// void monitor_link_status() {
-//   int i = 0;
-//   serialLog(INFO, "Link status\n");
-//   while(1) {
-//     if (eth.linkStatus() == 1) {
-//       Serial.print("U");
-//     } else {
-//       Serial.print("_");
-//     }
-//     delay(500);
-//     i++;
-//     if (i % 30 == 0) {
-//       Serial.println("");
-//     }
-//   }
-// }
+    // After connecting, you can check uplink: (eth.linkStatus() == 1)
+}
 
 void setup() {
     bool setupFailed = false;
@@ -64,7 +42,7 @@ void setup() {
     Wire.setSCL(I2C_SCL);
     Wire.begin();
 
-    display_motd();
+    serialLogDisplayMotd();
     connect_to_ethernet();
 
     if (!sensorInitSht3x()) setupFailed = true;

@@ -38,3 +38,11 @@ void serialLogNewLine(SerialLogLevel level) {
         Serial.println("");
     }
 }
+
+void serialLogDisplayMotd() {
+    Serial.println("");
+    Serial.println("===========================================");
+    Serial.println("        Ethernet Environment Sensor        ");
+    Serial.println("===========================================");
+    Serial.println("");
+}

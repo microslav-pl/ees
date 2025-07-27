@@ -8,9 +8,6 @@
 #define I2C_SDA                 4u
 #define I2C_SCL                 5u
 
-// Bosch Sensortec BMP388 I²C Address: 0x76 or 0x77
-#define I2C_ADD_BMP388          0x77
-
 // Sensirion SEN5x I²C Address: 0x69
 #define I2C_ADD_SEN5x           0x69
 

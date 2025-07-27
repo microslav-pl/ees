@@ -33,3 +33,8 @@ void serialLogProgress(SerialLogLevel level);
  * @param[in] level     Log level of logged message
  */
 void serialLogNewLine(SerialLogLevel level);
+
+/**
+ * @brief Prints message of the day to serial.
+ */
+void serialLogDisplayMotd();
