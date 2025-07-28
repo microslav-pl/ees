@@ -19,7 +19,7 @@ static uint32_t bmp3xx_P_index = 0;
 static uint32_t bmp3xx_lastMeasurementTime = 0;
 
 uint8_t findBmp3xxAddress() {
-    serialLog(INFO, "Looking for BMP3xx.\n");
+    serialLog(INFO, "Looking for BMP3xx...\n");
     Wire.beginTransmission(0x77);
     if (Wire.endTransmission() == 0) {
         serialLog(INFO, "Found I²C device at address 0x77.\n");
@@ -37,14 +37,14 @@ uint8_t findBmp3xxAddress() {
 
 bool sensorInitBmp3xx() {
     if (!bmp3xx.begin_I2C(findBmp3xxAddress())) {
-        serialLog(ERROR, "Could not initialize BMP3xx\n");
+        serialLog(ERROR, "Could not initialize BMP3xx.\n");
         return false;
     }
     bmp3xx.setTemperatureOversampling(BMP3_OVERSAMPLING_8X);
     bmp3xx.setPressureOversampling(BMP3_OVERSAMPLING_4X);
     bmp3xx.setIIRFilterCoeff(BMP3_IIR_FILTER_COEFF_3);
     bmp3xx.setOutputDataRate(BMP3_ODR_50_HZ);
-    serialLog(INFO, "Bosch Sensortec BMP3xx Initialized\n");
+    serialLog(INFO, "Bosch Sensortec BMP3xx Initialized.\n");
     return true;
 }
 
@@ -53,7 +53,7 @@ bool sensorReadBmp3xx() {
     float pressure = 0.0;
 
     if (!bmp3xx.performReading()) {
-        serialLog(ERROR, "Could not read values from BMP3xx\n");
+        serialLog(ERROR, "Could not read values from BMP3xx.\n");
         return false;
     }
     temperature = (float)bmp3xx.temperature;

@@ -21,7 +21,7 @@ static uint32_t sht3x_RH_index = 0;
 static uint32_t sht3x_lastMeasurementTime = 0;
 
 uint8_t findSht3xAddress() {
-    serialLog(INFO, "Looking for SHT3x.\n");
+    serialLog(INFO, "Looking for SHT3x...\n");
     Wire.beginTransmission(0x44);
     if (Wire.endTransmission() == 0) {
         serialLog(INFO, "Found I²C device at address 0x44.\n");
@@ -48,7 +48,7 @@ bool sensorInitSht3x() {
   
     error = sht.readStatusRegister(statusRegister);
     if (error != NO_ERROR) {
-        serialLog(ERROR, "Error trying to execute readStatusRegister()\n");
+        serialLog(ERROR, "Error trying to execute readStatusRegister():\n");
         errorToString(error, errorMessage, sizeof errorMessage);
         serialLog(ERROR, "%s\n", errorMessage);
         return false;
@@ -58,12 +58,12 @@ bool sensorInitSht3x() {
     error = sht.startPeriodicMeasurement(REPEATABILITY_HIGH, MPS_TWO_PER_SECOND);
 
     if (error != NO_ERROR) {
-        serialLog(ERROR, "Error trying to execute startPeriodicMeasurement()\n");
+        serialLog(ERROR, "Error trying to execute startPeriodicMeasurement():\n");
         errorToString(error, errorMessage, sizeof errorMessage);
         serialLog(ERROR, "%s\n", errorMessage);
         return false;
     }
-    serialLog(INFO, "Sensirion SHT3x Initialized\n");
+    serialLog(INFO, "Sensirion SHT3x Initialized.\n");
     return true;
 }
 

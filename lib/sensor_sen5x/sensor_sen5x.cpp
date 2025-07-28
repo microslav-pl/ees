@@ -49,7 +49,7 @@ bool sensorInitSen5x() {
         serialLog(ERROR, "%s\n", errorMessage);
         return false;
     }
-    serialLog(INFO, "Sensirion SEN5x Initialized\n");
+    serialLog(INFO, "Sensirion SEN5x Initialized.\n");
     return true;
 }
 
@@ -69,7 +69,7 @@ bool sensorReadSen5x() {
         noxIndex);
 
     if (error) {
-        serialLog(ERROR, "Error trying to execute readMeasuredValues()\n");
+        serialLog(ERROR, "Error trying to execute readMeasuredValues().\n");
         errorToString(error, errorMessage, sizeof errorMessage);
         serialLog(ERROR, "%s\n", errorMessage);
     }
