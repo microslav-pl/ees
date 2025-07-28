@@ -42,7 +42,9 @@ void serialLogNewLine(SerialLogLevel level) {
 void serialLogDisplayMotd() {
     Serial.println("");
     Serial.println("===========================================");
-    Serial.println("        Ethernet Environment Sensor        ");
+    Serial.println("        Ethernet Environment Sensor");
+    Serial.println("===========================================");
+    Serial.println("        github.com/microslav-pl/ees");
     Serial.println("===========================================");
     Serial.println("");
 }
