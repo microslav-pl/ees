@@ -1,5 +1,7 @@
 #pragma once
 
+#include <StreamString.h>
+
 /**
  * @brief Searches for known I²C addressess of Bosch Sensortec BMP3xx (0x76, 0x77).
  * @note If device is not found, function logs error and returns 0x77 address as fallback.
@@ -39,3 +41,9 @@ float medianTemperatureBmp3xx();
  * @return Atmospheric pressure (Pa).
  */
 float medianPressureBmp3xx();
+
+/**
+ * @brief Appends string with json data from sensor.
+ * @param[in] json String to append.
+ */
+void appendJsonBmp3xx(StreamString& json);

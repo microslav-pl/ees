@@ -2,7 +2,6 @@
 #include <SensirionI2cSht3x.h>
 #include <Wire.h>
 
-
 #include <config.h>
 #include <median.h>
 #include <serialLog.h>
@@ -64,7 +63,7 @@ bool sensorInitSht3x() {
         serialLog(ERROR, "%s\n", errorMessage);
         return false;
     }
-
+    serialLog(INFO, "Sensirion SHT3x Initialized\n");
     return true;
 }
 
@@ -105,4 +104,13 @@ float medianTemperatureSht3x() {
 
 float medianRelHumiditySht3x() {
     return medianFromArray(sht3x_RH_values, SHT3X_MEDIAN_ARRAY);
+}
+
+void appendJsonSht3x(StreamString& json) {
+    json.printf(
+        "  \"sht3x\": {\n"
+        "    \"temperature\": %.1f,\n"
+        "    \"humidity\": %.1f\n"
+        "  }",
+    medianTemperatureSht3x(), medianRelHumiditySht3x());
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <StreamString.h>
+
 /**
  * @brief Searches for known I²C addressess of Sensirion SHT3x (0x44, 0x45).
  * @note If device is not found, function logs error and returns 0x44 address as fallback.
@@ -39,3 +41,9 @@ float medianTemperatureSht3x();
  * @return Relative humidity (RH%).
  */
 float medianRelHumiditySht3x();
+
+/**
+ * @brief Appends string with json data from sensor.
+ * @param[in] json String to append.
+ */
+void appendJsonSht3x(StreamString& json);

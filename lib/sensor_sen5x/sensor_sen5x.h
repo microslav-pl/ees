@@ -1,5 +1,7 @@
 #pragma once
 
+#include <StreamString.h>
+
 /**
  * @brief Initializes Sensirion SEN5x.
  * @return Status of initialization.
@@ -68,3 +70,9 @@ float medianVocIndexSen5x();
  * @return NOx Index.
  */
 float medianNoxIndexSen5x();
+
+/**
+ * @brief Appends string with json data from sensor.
+ * @param[in] json String to append.
+ */
+void appendJsonSen5x(StreamString& json);

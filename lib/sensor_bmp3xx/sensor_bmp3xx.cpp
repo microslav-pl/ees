@@ -44,6 +44,7 @@ bool sensorInitBmp3xx() {
     bmp3xx.setPressureOversampling(BMP3_OVERSAMPLING_4X);
     bmp3xx.setIIRFilterCoeff(BMP3_IIR_FILTER_COEFF_3);
     bmp3xx.setOutputDataRate(BMP3_ODR_50_HZ);
+    serialLog(INFO, "Bosch Sensortec BMP3xx Initialized\n");
     return true;
 }
 
@@ -57,7 +58,7 @@ bool sensorReadBmp3xx() {
     }
     temperature = (float)bmp3xx.temperature;
     pressure = (float)bmp3xx.pressure;
-    serialLog(DEBUG, "Read from BMP3xx: T: %6.2f, RH: %6.2f\n", temperature, pressure);
+    serialLog(DEBUG, "Read from BMP3xx: T: %6.2f, P: %6.2f\n", temperature, pressure);
     bmp3xx_T_values[(bmp3xx_T_index++ % BMP3XX_MEDIAN_ARRAY)] = temperature;
     bmp3xx_P_values[(bmp3xx_P_index++ % BMP3XX_MEDIAN_ARRAY)] = pressure;
     return true;
@@ -81,4 +82,14 @@ float medianTemperatureBmp3xx() {
 
 float medianPressureBmp3xx() {
     return medianFromArray(bmp3xx_P_values, BMP3XX_MEDIAN_ARRAY);
+}
+
+
+void appendJsonBmp3xx(StreamString& json) {
+    json.printf(
+        "  \"bmp3xx\": {\n"
+        "    \"temperature\": %.1f,\n"
+        "    \"pressure\": %.1f\n"
+        "  }",
+    medianTemperatureBmp3xx(), medianPressureBmp3xx());
 }

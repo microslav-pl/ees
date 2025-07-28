@@ -49,6 +49,7 @@ bool sensorInitSen5x() {
         serialLog(ERROR, "%s\n", errorMessage);
         return false;
     }
+    serialLog(INFO, "Sensirion SEN5x Initialized\n");
     return true;
 }
 
@@ -71,7 +72,12 @@ bool sensorReadSen5x() {
         serialLog(ERROR, "Error trying to execute readMeasuredValues()\n");
         errorToString(error, errorMessage, sizeof errorMessage);
         serialLog(ERROR, "%s\n", errorMessage);
-    } 
+    }
+    serialLog(DEBUG, "Read from SEN5x: PM1: %6.2f, PM2.5: %6.2f, PM4; %6.2f, PM10: %6.2f\n",
+        massConcentrationPm1p0, massConcentrationPm2p5, massConcentrationPm4p0, massConcentrationPm10p0);
+    serialLog(DEBUG, "Read from SEN5x: RH: %6.2f, T: %6.2f, VOC; %6.2f, NOx: %6.2f\n",
+        ambientHumidity, ambientTemperature, vocIndex, noxIndex);
+
     sen5x_pm1_values[(sen5x_pm1_index++ % SEN5X_MEDIAN_ARRAY)] = massConcentrationPm1p0;
     sen5x_pm2p5_values[(sen5x_pm2p5_index++ % SEN5X_MEDIAN_ARRAY)] = massConcentrationPm2p5;
     sen5x_pm4_values[(sen5x_pm4_index++ % SEN5X_MEDIAN_ARRAY)] = massConcentrationPm4p0;
@@ -136,4 +142,21 @@ float medianVocIndexSen5x() {
 
 float medianNoxIndexSen5x() {
     return medianFromArray(sen5x_nox_values, SEN5X_MEDIAN_ARRAY);
+}
+
+void appendJsonSen5x(StreamString& json) {
+    json.printf(
+        "  \"sen5x\": {\n"
+        "    \"pm1_0\": %.1f,\n"
+        "    \"pm2_5\": %.1f,\n"
+        "    \"pm4_0\": %.1f,\n"
+        "    \"pm10_0\": %.1f,\n"
+        "    \"humidity\": %.1f,\n"
+        "    \"temperature\": %.1f,\n"
+        "    \"voc\": %.1f,\n"
+        "    \"nox\": %.1f\n"
+        "  }",
+        medianPM1Sen5x(), medianPM2p5Sen5x(), medianPM4Sen5x(), medianPM10Sen5x(),
+        medianRelHumiditySen5x(), medianTemperatureSen5x(), medianVocIndexSen5x(),
+        medianNoxIndexSen5x());
 }

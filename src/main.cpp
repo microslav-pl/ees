@@ -1,5 +1,4 @@
 #include <Arduino.h>
-//#include <W55RP20lwIP.h>
 #include <Wire.h>
 
 #include <config.h>
@@ -44,8 +43,4 @@ void loop() {
     scheduleReadSen5x();
     scheduleReadBmp3xx();
     handleWebServerRequests();
-    // serialLog(INFO, "Median T: %6.2f, RH: %6.2f\n", medianTemperatureSht3x(), medianRelHumiditySht3x());
-    // serialLog(INFO, "Median T: %6.2f, P:  %6.2f\n", medianTemperatureBmp3xx(), medianPressureBmp3xx());
-    // serialLog(INFO, "Median PM1: %6.2f, PM2.5: %6.2f, PM4; %6.2f, PM10: %6.2f\n", medianPM1Sen5x(), medianPM2p5Sen5x(), medianPM4Sen5x(), medianPM10Sen5x());
-    // serialLog(INFO, "Median T: %6.2f, RH: %6.2f, VOC: %6.2f, NOx: %6.2f\n", medianTemperatureSen5x(), medianRelHumiditySen5x(), medianVocIndexSen5x(), medianNoxIndexSen5x());
 }

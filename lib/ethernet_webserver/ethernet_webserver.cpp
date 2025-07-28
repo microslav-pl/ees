@@ -45,28 +45,22 @@ void handleWebServerRequests() {
 }
 
 void handleRootPage() {
-    StreamString page = "<html>\n";
-    page += "<head>\n<title>EES</title>\n</head>\n<body>\n";
-    page += "<h1>Hello, world!</h1>\n</body>\n";
-    page += "</html>";
+    StreamString page;
+    page.print("<html>\n<head>\n");
+    page.print("<title>EES</title>\n");
+    page.print("</head>\n<body>\n");
+    page.print("<h1>Hello, world!</h1>\n");
+    page.print("</body>\n</html>");
     server.send(200, "text/html", page);
     serialLog(DEBUG, "Webserver: Root page was served.\n");
+    //serialLog(DEBUG, "Webserver: length of page buffer: %d.\n", page.length());
 }
 
 void handleNotFoundPage() {
-    String message = "File Not Found\n\n";
-    message += "URI: ";
-    message += server.uri();
-    message += "\nMethod: ";
-    message += (server.method() == HTTP_GET) ? "GET" : "POST";
-    message += "\nArguments: ";
-    message += server.args();
-    message += "\n";
-    for (uint8_t i = 0; i < server.args(); i++) {
-        message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-    }
-    server.send(404, "text/plain", message);
+    StreamString page = "Error 404 - File Not Found\n";
+    server.send(404, "text/plain", page);
     serialLog(DEBUG, "Webserver: 404 page was served.\n");
+    //serialLog(DEBUG, "Webserver: length of page buffer: %d.\n", page.length());
 }
 
 void handleDebugPage() {
@@ -76,7 +70,6 @@ void handleDebugPage() {
     sec = sec % 60;
 
     StreamString page;
-    page.reserve(500);
     page.printf("<html>\
     <head>\
         <title>EES Debug Page</title>\
@@ -89,35 +82,19 @@ void handleDebugPage() {
     </html>", hr, min, sec, rp2040.getFreeHeap());
     server.send(200, "text/html", page);
     serialLog(DEBUG, "Webserver: Debug page was served.\n");
+    //serialLog(DEBUG, "Webserver: length of page buffer: %d.\n", page.length());
 }
 
 void handleDataJson() {
     StreamString json;
-    json.reserve(500);
-    json.printf("{\n"
-        "  \"sht3x\": {\n"
-        "    \"temperature\": %.1f,\n"
-        "    \"humidity\": %.1f\n"
-        "  },\n"
-        "  \"bmp3xx\": {\n"
-        "    \"temperature\": %.1f,\n"
-        "    \"pressure\": %.1f\n"
-        "  },\n"
-        "  \"sen5x\": {\n"
-        "    \"pm1_0\": %.1f,\n"
-        "    \"pm2_5\": %.1f,\n"
-        "    \"pm4_0\": %.1f,\n"
-        "    \"pm10_0\": %.1f,\n"
-        "    \"humidity\": %.1f,\n"
-        "    \"temperature\": %.1f,\n"
-        "    \"voc\": %.1f,\n"
-        "    \"nox\": %.1f\n"
-        "  }\n"
-        "}",
-        medianTemperatureSht3x(), medianRelHumiditySht3x(),
-        medianTemperatureBmp3xx(), medianPressureBmp3xx(),
-        medianPM1Sen5x(), medianPM2p5Sen5x(), medianPM4Sen5x(), medianPM10Sen5x(),
-        medianRelHumiditySen5x(), medianTemperatureSen5x(), medianVocIndexSen5x(), medianNoxIndexSen5x());
+    json.print("{\n");
+    appendJsonSht3x(json);
+    json.print(",\n");
+    appendJsonBmp3xx(json);
+    json.print(",\n");
+    appendJsonSen5x(json);
+    json.print("\n}");
     server.send(200, "application/json", json);
     serialLog(DEBUG, "Webserver: data.json was served.\n");
+    //serialLog(DEBUG, "Webserver: length of json buffer: %d.\n", json.length());
 }
