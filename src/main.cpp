@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-#include <config.h>
 #include <ethernet_webserver.h>
 #include <median.h>
 #include <sensor_sht3x.h>

@@ -1,12 +1,14 @@
 #include <Arduino.h>
 #include <W55RP20lwIP.h>
 #include <WebServer.h>
+#include <LEAmDNS.h>
 #include <StreamString.h>
 
 #include <sensor_sht3x.h>
 #include <sensor_sen5x.h>
 #include <sensor_bmp3xx.h>
 #include <serialLog.h>
+#include <timestamp.h>
 
 #include "ethernet_webserver.h"
 
@@ -14,6 +16,9 @@ Wiznet55rp20lwIP eth(20);
 WebServer server(80);
 
 void connectToEthernet() {
+    uint8_t mac[6];
+    StreamString mdnsHostname;
+
     if (!eth.begin()) {
         serialLog(ERROR, "No wired Ethernet hardware detected.\n");
         while (1) {
@@ -27,8 +32,15 @@ void connectToEthernet() {
     }
     serialLogNewLine(INFO);
     serialLog(INFO, "Ethernet connected.\n");
-    serialLog(INFO, "IP address: %s\n", eth.localIP().toString().c_str());
+    serialLog(INFO, "IP address:    %s\n", eth.localIP().toString().c_str());
+    eth.macAddress(mac);
+    serialLog(INFO, "MAC address:   %02X:%02X:%02X:%02X:%02X:%02X\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
     // After connecting, you can check uplink: (eth.linkStatus() == 1)
+
+    mdnsHostname.printf("ees-%02x%02x%02x",mac[3], mac[4], mac[5]);
+    if (MDNS.begin(mdnsHostname.c_str())) {
+        serialLog(INFO, "mDNS hostname: %s.local\n", mdnsHostname.c_str());
+    }
 }
 
 void startWebServer() {
@@ -42,6 +54,7 @@ void startWebServer() {
 
 void handleWebServerRequests() {
     server.handleClient();
+    MDNS.update();
 }
 
 void handleRootPage() {
@@ -50,6 +63,12 @@ void handleRootPage() {
     page.print("<title>EES</title>\n");
     page.print("</head>\n<body>\n");
     page.print("<h1>Hello, world!</h1>\n");
+    page.print("<p><a href=\"data.json\">data.json</a></p>\n");
+    page.print("<p><a href=\"debug\">debug</a></p>\n");
+    page.printf("<p>IP: %s</p>", eth.localIP().toString().c_str());
+    page.print("<p>Uptime: ");
+    appendTimestamp(page);
+    page.print("</p>\n");
     page.print("</body>\n</html>");
     server.send(200, "text/html", page);
     serialLog(DEBUG, "Webserver: Root page was served.\n");

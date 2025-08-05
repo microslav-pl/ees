@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <cstdarg>
 
-#include <config.h>
 #include "serialLog.h"
 
 static SerialLogLevel currentLogLevel = CURRENT_LOG_LEVEL;

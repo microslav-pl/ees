@@ -32,6 +32,9 @@ static uint32_t sen5x_voc_index = 0;
 static uint32_t sen5x_nox_index = 0;
 
 static uint32_t sen5x_lastMeasurementTime = 0;
+static uint32_t sen5x_lastMeasurementDuration = 0;
+static uint32_t sen5x_readsTotal = 0;
+static uint32_t sen5x_readsFailed = 0;
 
 bool sensorInitSen5x() {
     sen5x.begin(Wire);
@@ -62,17 +65,24 @@ bool sensorReadSen5x() {
     float ambientTemperature;
     float vocIndex;
     float noxIndex;
+    uint32_t sen5x_measurementStartTime;
 
+    sen5x_readsTotal++;
+    sen5x_measurementStartTime = millis();
     error = sen5x.readMeasuredValues(
         massConcentrationPm1p0, massConcentrationPm2p5, massConcentrationPm4p0,
         massConcentrationPm10p0, ambientHumidity, ambientTemperature, vocIndex,
         noxIndex);
+    sen5x_lastMeasurementDuration = millis() - sen5x_measurementStartTime;
 
     if (error) {
         serialLog(ERROR, "Error trying to execute readMeasuredValues().\n");
         errorToString(error, errorMessage, sizeof errorMessage);
         serialLog(ERROR, "%s\n", errorMessage);
+        sen5x_readsFailed++;
+        return false;
     }
+
     serialLog(DEBUG, "Read from SEN5x: PM1: %6.2f, PM2.5: %6.2f, PM4; %6.2f, PM10: %6.2f\n",
         massConcentrationPm1p0, massConcentrationPm2p5, massConcentrationPm4p0, massConcentrationPm10p0);
     serialLog(DEBUG, "Read from SEN5x: RH: %6.2f, T: %6.2f, VOC; %6.2f, NOx: %6.2f\n",
@@ -154,9 +164,15 @@ void appendJsonSen5x(StreamString& json) {
         "    \"humidity\": %.1f,\n"
         "    \"temperature\": %.1f,\n"
         "    \"voc\": %.1f,\n"
-        "    \"nox\": %.1f\n"
+        "    \"nox\": %.1f,\n"
+        "    \"metadata\": {\n"
+        "      \"timestamp\": %d,\n"
+        "      \"duration\": %d,\n"
+        "      \"reads\": %d,\n"
+        "      \"failed\": %d\n"
+        "    }\n"
         "  }",
         medianPM1Sen5x(), medianPM2p5Sen5x(), medianPM4Sen5x(), medianPM10Sen5x(),
         medianRelHumiditySen5x(), medianTemperatureSen5x(), medianVocIndexSen5x(),
-        medianNoxIndexSen5x());
+        medianNoxIndexSen5x(), sen5x_lastMeasurementTime, sen5x_lastMeasurementDuration, sen5x_readsTotal, sen5x_readsFailed);
 }

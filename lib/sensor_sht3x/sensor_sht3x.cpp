@@ -19,17 +19,20 @@ static uint32_t sht3x_T_index = 0;
 static uint32_t sht3x_RH_index = 0;
 
 static uint32_t sht3x_lastMeasurementTime = 0;
+static uint32_t sht3x_lastMeasurementDuration = 0;
+static uint32_t sht3x_readsTotal = 0;
+static uint32_t sht3x_readsFailed = 0;
 
 uint8_t findSht3xAddress() {
-    serialLog(INFO, "Looking for SHT3x...\n");
+    serialLog(DEBUG, "Looking for SHT3x...\n");
     Wire.beginTransmission(0x44);
     if (Wire.endTransmission() == 0) {
-        serialLog(INFO, "Found I²C device at address 0x44.\n");
+        serialLog(DEBUG, "Found I²C device at address 0x44.\n");
         return 0x44;
     }
     Wire.beginTransmission(0x45);
     if (Wire.endTransmission() == 0) {
-        serialLog(INFO, "Found I²C device at address 0x45.\n");
+        serialLog(DEBUG, "Found I²C device at address 0x45.\n");
         return 0x45;
     }
     serialLog(ERROR, "No I²C device was found at 0x44 or 0x45.\n");
@@ -70,12 +73,17 @@ bool sensorInitSht3x() {
 bool sensorReadSht3x() {
     float temperature = 0.0;
     float relHumidity = 0.0;
+    uint32_t sht3x_measurementStartTime;
 
+    sht3x_readsTotal++;
+    sht3x_measurementStartTime = millis();
     error = sht.blockingReadMeasurement(temperature, relHumidity);
+    sht3x_lastMeasurementDuration = millis() - sht3x_measurementStartTime;
     if (error != NO_ERROR) {
         serialLog(ERROR, "Error trying to execute blockingReadMeasurement():\n");
         errorToString(error, errorMessage, sizeof errorMessage);
         serialLog(ERROR, "%s\n", errorMessage);
+        sht3x_readsFailed++;
         return false;
     }
     serialLog(DEBUG, "Read from SHT3x: T: %6.2f, RH: %6.2f\n", temperature, relHumidity);
@@ -110,7 +118,13 @@ void appendJsonSht3x(StreamString& json) {
     json.printf(
         "  \"sht3x\": {\n"
         "    \"temperature\": %.1f,\n"
-        "    \"humidity\": %.1f\n"
+        "    \"humidity\": %.1f,\n"
+        "    \"metadata\": {\n"
+        "      \"timestamp\": %d,\n"
+        "      \"duration\": %d,\n"
+        "      \"reads\": %d,\n"
+        "      \"failed\": %d\n"
+        "    }\n"
         "  }",
-    medianTemperatureSht3x(), medianRelHumiditySht3x());
+    medianTemperatureSht3x(), medianRelHumiditySht3x(), sht3x_lastMeasurementTime, sht3x_lastMeasurementDuration, sht3x_readsTotal, sht3x_readsFailed);
 }

@@ -17,17 +17,20 @@ static uint32_t bmp3xx_T_index = 0;
 static uint32_t bmp3xx_P_index = 0;
 
 static uint32_t bmp3xx_lastMeasurementTime = 0;
+static uint32_t bmp3xx_lastMeasurementDuration = 0;
+static uint32_t bmp3xx_readsTotal = 0;
+static uint32_t bmp3xx_readsFailed = 0;
 
 uint8_t findBmp3xxAddress() {
-    serialLog(INFO, "Looking for BMP3xx...\n");
+    serialLog(DEBUG, "Looking for BMP3xx...\n");
     Wire.beginTransmission(0x77);
     if (Wire.endTransmission() == 0) {
-        serialLog(INFO, "Found I²C device at address 0x77.\n");
+        serialLog(DEBUG, "Found I²C device at address 0x77.\n");
         return 0x77;
     }
     Wire.beginTransmission(0x76);
     if (Wire.endTransmission() == 0) {
-        serialLog(INFO, "Found I²C device at address 0x76.\n");
+        serialLog(DEBUG, "Found I²C device at address 0x76.\n");
         return 0x76;
     }
     serialLog(ERROR, "No I²C device was found at 0x77 or 0x76.\n");
@@ -51,9 +54,17 @@ bool sensorInitBmp3xx() {
 bool sensorReadBmp3xx() {
     float temperature = 0.0;
     float pressure = 0.0;
+    bool status;
+    uint32_t bmp3xx_measurementStartTime;
 
-    if (!bmp3xx.performReading()) {
+    bmp3xx_readsTotal++;
+    bmp3xx_measurementStartTime = millis();
+    status = bmp3xx.performReading();
+    bmp3xx_lastMeasurementDuration = millis() - bmp3xx_measurementStartTime;
+
+    if (status == false) {
         serialLog(ERROR, "Could not read values from BMP3xx.\n");
+        bmp3xx_readsFailed++;
         return false;
     }
     temperature = (float)bmp3xx.temperature;
@@ -89,7 +100,13 @@ void appendJsonBmp3xx(StreamString& json) {
     json.printf(
         "  \"bmp3xx\": {\n"
         "    \"temperature\": %.1f,\n"
-        "    \"pressure\": %.1f\n"
+        "    \"pressure\": %.1f,\n"
+        "    \"metadata\": {\n"
+        "      \"timestamp\": %d,\n"
+        "      \"duration\": %d,\n"
+        "      \"reads\": %d,\n"
+        "      \"failed\": %d\n"
+        "    }\n"
         "  }",
-    medianTemperatureBmp3xx(), medianPressureBmp3xx());
+    medianTemperatureBmp3xx(), medianPressureBmp3xx(), bmp3xx_lastMeasurementTime, bmp3xx_lastMeasurementDuration, bmp3xx_readsTotal, bmp3xx_readsFailed);
 }
