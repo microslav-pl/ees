@@ -40,14 +40,14 @@ bool sensorInitSen5x() {
     sen5x.begin(Wire);
     error = sen5x.deviceReset();
     if (error) {
-        serialLog(ERROR, "Error trying to execute deviceReset()\n");
+        serialLog(ERROR, "Error trying to reset device:\n");
         errorToString(error, errorMessage, sizeof errorMessage);
         serialLog(ERROR, "%s\n", errorMessage);
         return false;
     }
     error = sen5x.startMeasurement();
     if (error) {
-        serialLog(ERROR, "Error trying to execute startMeasurement()\n");
+        serialLog(ERROR, "Error trying to start measurement:\n");
         errorToString(error, errorMessage, sizeof errorMessage);
         serialLog(ERROR, "%s\n", errorMessage);
         return false;
@@ -76,7 +76,7 @@ bool sensorReadSen5x() {
     sen5x_lastMeasurementDuration = millis() - sen5x_measurementStartTime;
 
     if (error) {
-        serialLog(ERROR, "Error trying to execute readMeasuredValues().\n");
+        serialLog(ERROR, "Error trying to read measured values:\n");
         errorToString(error, errorMessage, sizeof errorMessage);
         serialLog(ERROR, "%s\n", errorMessage);
         sen5x_readsFailed++;

@@ -51,17 +51,17 @@ bool sensorInitSht3x() {
   
     error = sht.readStatusRegister(statusRegister);
     if (error != NO_ERROR) {
-        serialLog(ERROR, "Error trying to execute readStatusRegister():\n");
+        serialLog(ERROR, "Error trying to read status register:\n");
         errorToString(error, errorMessage, sizeof errorMessage);
         serialLog(ERROR, "%s\n", errorMessage);
         return false;
     }
 
-    serialLog(DEBUG, "SHT Status register: 0x%04X\n", statusRegister);
+    serialLog(DEBUG, "SHT status register: 0x%04X\n", statusRegister);
     error = sht.startPeriodicMeasurement(REPEATABILITY_HIGH, MPS_TWO_PER_SECOND);
 
     if (error != NO_ERROR) {
-        serialLog(ERROR, "Error trying to execute startPeriodicMeasurement():\n");
+        serialLog(ERROR, "Error trying to start periodic measurement mode:\n");
         errorToString(error, errorMessage, sizeof errorMessage);
         serialLog(ERROR, "%s\n", errorMessage);
         return false;
@@ -80,7 +80,7 @@ bool sensorReadSht3x() {
     error = sht.blockingReadMeasurement(temperature, relHumidity);
     sht3x_lastMeasurementDuration = millis() - sht3x_measurementStartTime;
     if (error != NO_ERROR) {
-        serialLog(ERROR, "Error trying to execute blockingReadMeasurement():\n");
+        serialLog(ERROR, "Error trying to read measurement:\n");
         errorToString(error, errorMessage, sizeof errorMessage);
         serialLog(ERROR, "%s\n", errorMessage);
         sht3x_readsFailed++;
