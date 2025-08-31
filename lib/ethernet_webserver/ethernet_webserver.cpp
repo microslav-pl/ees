@@ -75,14 +75,12 @@ void handleRootPage() {
     page.print("</body>\n</html>");
     server.send(200, "text/html", page);
     serialLog(DEBUG, "Webserver: Root page was served.\n");
-    //serialLog(DEBUG, "Webserver: length of page buffer: %d.\n", page.length());
 }
 
 void handleNotFoundPage() {
     StreamString page = "Error 404 - File Not Found\n";
     server.send(404, "text/plain", page);
     serialLog(DEBUG, "Webserver: 404 page was served.\n");
-    //serialLog(DEBUG, "Webserver: length of page buffer: %d.\n", page.length());
 }
 
 void handleDataJson() {
@@ -96,7 +94,6 @@ void handleDataJson() {
     json.print("\n}");
     server.send(200, "application/json", json);
     serialLog(DEBUG, "Webserver: data.json was served.\n");
-    //serialLog(DEBUG, "Webserver: length of json buffer: %d.\n", json.length());
 }
 
 void handleLogo() {

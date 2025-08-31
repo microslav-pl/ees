@@ -10,6 +10,6 @@ void handleRootPage();
 
 void handleNotFoundPage();
 
-void handleDebugPage();
-
 void handleDataJson();
+
+void handleLogo();
